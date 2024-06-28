@@ -1,0 +1,14 @@
+# Ignore list
+
+# Types and directories 
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+CrossingDetector/
+
+
+# Specific files
+cmake_install.cmake
+CmakeCache.txt
+

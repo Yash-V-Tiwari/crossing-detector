@@ -177,7 +177,7 @@ private:
 
     /*********  triggering ************/
 
-    /* Whether there should be a trigger in the given direction (true = rising, float = falling),
+    /* Whether there should be a trigger in the given direction (true = rising, false = falling),
      * given the current pastCounter and futureCounter and the passed values and thresholds
      * surrounding the point where a crossing may be.
      */

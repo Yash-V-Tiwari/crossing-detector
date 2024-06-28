@@ -351,7 +351,7 @@ void CrossingDetector::process(AudioSampleBuffer& continuousBuffer)
         if (wpThresh != nullptr)
         {
             for (int i = 0; i < nSamples; ++i)
-                wpThresh[i] = pThresh[i];
+                wpThresh[i] -= pThresh[i];
         }
     }
 }
@@ -808,8 +808,8 @@ bool CrossingDetector::shouldTrigger(bool direction, float preVal, float postVal
     }
 
     // number of samples required before and after crossing threshold
-    int pastSamplesNeeded = pastSpan ? static_cast<int>(ceil(pastSpan * pastStrict)) : 0;
-    int futureSamplesNeeded = futureSpan ? static_cast<int>(ceil(futureSpan * futureStrict)) : 0;
+    int pastSamplesNeeded = (pastSpan != 0) ? static_cast<int>(ceil(pastSpan * pastStrict)) : 0;
+    int futureSamplesNeeded = (futureSpan != 0) ? static_cast<int>(ceil(futureSpan * futureStrict)) : 0;
     
     // four conditions for the event
     bool preSat = direction != (preVal > preThresh);
