@@ -676,6 +676,28 @@ CrossingDetectorEditor::CrossingDetectorEditor(GenericProcessor* parentNode, boo
 
     outputGroupSet->addGroup({ durationLabel, durationEditable, durationUnit });
 
+    /* ------------------ Stimulation delay duration --------------- */
+
+    xPos = LEFT_EDGE + TAB_WIDTH;
+    yPos += 45;
+
+    stimulationDelayLabel = new Label("DelL", "Stimulation Delay:");
+    stimulationDelayLabel->setBounds(bounds = { xPos, yPos, 105, C_TEXT_HT });
+    optionsPanel->addAndMakeVisible(stimulationDelayLabel);
+    opBounds = opBounds.getUnion(bounds);
+
+    stimulationDelayEditable = createEditable("DelE", String(processor->eventDuration), "",
+        bounds = { xPos += 110, yPos, 40, C_TEXT_HT });
+    optionsPanel->addAndMakeVisible(stimulationDelayEditable);
+    opBounds = opBounds.getUnion(bounds);
+
+    stimulationDelayUnit = new Label("DelUnitL", "ms");
+    stimulationDelayUnit->setBounds(bounds = { xPos += 45, yPos, 30, C_TEXT_HT });
+    optionsPanel->addAndMakeVisible(stimulationDelayUnit);
+    opBounds = opBounds.getUnion(bounds);
+
+    outputGroupSet->addGroup({ stimulationDelayLabel, stimulationDelayEditable, stimulationDelayUnit });
+
     /* ------------------ Tattle channels --------------- */
 
     xPos = LEFT_EDGE + TAB_WIDTH;
@@ -979,6 +1001,15 @@ void CrossingDetectorEditor::labelTextChanged(Label* labelThatHasChanged)
         if (updateIntLabel(labelThatHasChanged, 0, INT_MAX, processor->eventDuration, &newVal))
         {
             processor->setParameter(CrossingDetector::EVENT_DUR, static_cast<float>(newVal));
+        }
+    }
+
+    else if (labelThatHasChanged == stimulationDelayEditable)
+    {
+        int newVal;
+        if (updateIntLabel(labelThatHasChanged, 0, INT_MAX, processor->eventDuration, &newVal))
+        {
+            processor->setParameter(CrossingDetector::DELAY_DUR, static_cast<float>(newVal));
         }
     }
 
@@ -1390,6 +1421,7 @@ void CrossingDetectorEditor::saveCustomParameters(XmlElement* xml)
 
     // timing
     paramValues->setAttribute("durationMS", durationEditable->getText());
+    paramValues->setAttribute("delayMS", stimulationDelayEditable->getText());
     paramValues->setAttribute("timeoutMS", timeoutEditable->getText());
 
     // debug tattles
@@ -1491,6 +1523,7 @@ void CrossingDetectorEditor::loadCustomParameters(XmlElement* xml)
 
         // timing
         durationEditable->setText(xmlNode->getStringAttribute("durationMS", durationEditable->getText()), sendNotificationSync);
+        stimulationDelayEditable->setText(xmlNode->getStringAttribute("delayMS", stimulationDelayEditable->getText()), sendNotificationSync);
         timeoutEditable->setText(xmlNode->getStringAttribute("timeoutMS", timeoutEditable->getText()), sendNotificationSync);
 
         // debug tattles

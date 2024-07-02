@@ -280,6 +280,11 @@ private:
     ScopedPointer<Label> durationEditable;
     ScopedPointer<Label> durationUnit;
 
+    // stimulation delay duration
+    ScopedPointer<Label> stimulationDelayLabel;
+    ScopedPointer<Label> stimulationDelayEditable;
+    ScopedPointer<Label> stimulationDelayUnit;
+
     // threshold tattling
     ScopedPointer<ToggleButton> tattleThreshButton;
 };

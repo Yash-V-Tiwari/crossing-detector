@@ -103,6 +103,7 @@ private:
         POS_ON,
         NEG_ON,
         EVENT_DUR,
+        DELAY_DUR,
         TIMEOUT,
         PAST_SPAN,
         PAST_STRICT,
@@ -240,6 +241,8 @@ private:
     int eventDurationSamp;
     int timeout; // milliseconds after an event onset when no more events are allowed.
     int timeoutSamp;
+    int stimulationDelay; // milliseconds of delay after crossing   
+    int stimulationDelaySamp;
 
     bool useBufferEndMask;
     int bufferEndMaskMs;
