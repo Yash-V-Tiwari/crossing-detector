@@ -22,9 +22,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "CrossingDetector.h"
-#include "CrossingDetectorEditor.h"
-#include <iostream>
+#include "CrossingDetectorEditor.h"    
 #include <cmath> // for ceil, floor
+
 
 CrossingDetector::CrossingDetector()
     : GenericProcessor      ("Crossing Detector")
@@ -261,7 +261,7 @@ void CrossingDetector::process(AudioSampleBuffer& continuousBuffer)
 
         int indCross = i - futureSpan;
 
-        // update pastSamplesA`bove and futureSamplesAbove
+        // update pastSamplesAbove and futureSamplesAbove
         if (pastSpan > 0)
         {
             int indLeaving = indCross - 2 - pastSpan;
@@ -304,15 +304,11 @@ void CrossingDetector::process(AudioSampleBuffer& continuousBuffer)
         float postVal = inputAt(indCross);
         float postThresh = thresholdAt(indCross);
 
-
-        // seems like it would be more effiecient to just use direction as rising or falling edge has different cases
         // check whether to trigger an event
+        // rising of falling edge, defaults to rising edge if both are selected         
         if (currPosOn && shouldTrigger(true, preVal, postVal, preThresh, postThresh) ||
             currNegOn && shouldTrigger(false, preVal, postVal, preThresh, postThresh))
         {
-            
-            std::cout << startTs; 
-
             // add event
             triggerEvent(startTs, indCross, nSamples, postThresh, postVal);
             
@@ -802,8 +798,7 @@ String CrossingDetector::toChannelThreshString(int chanNum)
 bool CrossingDetector::shouldTrigger(bool direction, float preVal, float postVal,
     float preThresh, float postThresh)
 {
-    // @todo
-    jassert(pastSamplesAbove >= 0 && futureSamplesAbove >= 0); // look up how jassert works
+    jassert(pastSamplesAbove >= 0 && futureSamplesAbove >= 0); 
 
     // check jumpLimit and 
     if (useJumpLimit && abs(postVal - preVal) >= jumpLimit)
@@ -818,13 +813,10 @@ bool CrossingDetector::shouldTrigger(bool direction, float preVal, float postVal
         return false;
     }
 
-    // Logically all of this makes sense 
     // number of samples required before and after crossing threshold
     int pastSamplesNeeded = (pastSpan != 0) ? static_cast<int>(ceil(pastSpan * pastStrict)) : 0;
     int futureSamplesNeeded = (futureSpan != 0) ? static_cast<int>(ceil(futureSpan * futureStrict)) : 0;
     
-    // Combined conditional doesn't fully make sense
-    // will split this up into case for rising edge that looks at post samples and falling edge that looks for pre samples
     // four conditions for the event
     bool preSat = direction != (preVal > preThresh);
     bool postSat = direction == (postVal > postThresh);
@@ -863,9 +855,9 @@ void CrossingDetector::triggerEvent(juce::int64 bufferTs, int crossingOffset,
     mdArray.add(learningRateVal);
 
     // Create events
-    int currEventChan = eventChannel; // something to do with stimulationDelay will go here
+    int currEventChan = eventChannel; 
     juce::uint8 ttlDataOn = 1 << currEventChan;
-    int sampleNumOn = std::max(crossingOffset, 0);
+    int sampleNumOn = max(crossingOffset, 0) + stimulationDelaySamp;
     juce::int64 eventTsOn = bufferTs + sampleNumOn;
     TTLEventPtr eventOn = TTLEvent::createTTLEvent(eventChannelPtr, eventTsOn,
         &ttlDataOn, sizeof(juce::uint8), mdArray, currEventChan);
